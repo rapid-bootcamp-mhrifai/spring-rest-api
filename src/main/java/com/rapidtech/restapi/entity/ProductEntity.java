@@ -1,7 +1,8 @@
 package com.rapidtech.restapi.entity;
 
-import lombok.AllArgsConstructor;
+import com.rapidtech.restapi.model.Product;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,6 +12,7 @@ import javax.persistence.Table;
 @Data
 @Table(name = "product")
 @Entity
+@NoArgsConstructor
 public class ProductEntity {
     @Id
     @Column(name = "id", length = 36)
@@ -21,4 +23,10 @@ public class ProductEntity {
 
     @Column(name = "price")
     private Double price;
+
+    public ProductEntity(Product product) {
+        this.id = product.getId();
+        this.name = product.getName();
+        this.price = product.getPrice();
+    }
 }

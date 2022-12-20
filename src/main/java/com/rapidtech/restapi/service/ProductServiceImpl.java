@@ -23,4 +23,19 @@ public class ProductServiceImpl implements ProductService{
         }
         return result.stream().map(Product::new).collect(Collectors.toList());
     }
+
+    @Override
+    public Product create(Product product) {
+        if(product == null) {
+            return new Product();
+        }
+        ProductEntity result= new ProductEntity(product);
+        try{
+            // proses simpan data => table siswa
+            this.productRepo.save(result);
+            return new Product(result);
+        }catch (Exception e){
+            return new Product();
+        }
+    }
 }
