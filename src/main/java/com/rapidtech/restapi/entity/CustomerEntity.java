@@ -1,36 +1,24 @@
 package com.rapidtech.restapi.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import java.util.Date;
+import javax.persistence.*;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 @Entity
-@Table(name = "customer")
+@Table(name = "customer_tab")
 public class CustomerEntity {
     @Id
-    @Column(name = "id", length = 36)
-    private int id;
+    @TableGenerator(name = "id_generator", table = "sequence_tab",
+            pkColumnName = "gen_name", valueColumnName = "gen_value",
+            pkColumnValue="customer_id", initialValue=0, allocationSize=0)
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "id_generator")
+    private Long id;
 
-    @Column(name = "fullName")
-    private String fullName;
-
-    @Column(name = "address")
-    private String address;
-
-    @Column(name = "city")
-    private String city;
-
-    @Column(name = "gender")
-    private String gender;
-
-    @Column(name = "dateOfBirth")
-    private Date dateOfBirth;
-
-    @Column(name = "dateOfPlace")
-    private String dateOfPlace;
+    @Column(name = "customer_name", length = 100)
+    private String name;
 }
