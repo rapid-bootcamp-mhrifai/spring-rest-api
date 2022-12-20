@@ -1,4 +1,4 @@
-/*package com.rapidtech.restapi.entity;
+package com.rapidtech.restapi.entity;
 
 import lombok.Data;
 
@@ -13,10 +13,11 @@ import javax.persistence.Table;
 public class CategoryEntity {
     @Id
     @Column(name = "id", length = 36)
-    private int categoryId;
+    private int id;
 
-    @Column(name = "category", length = 120)
-    private String category;
+    @Column(name = "code", length = 120)
+    private String code;
+
+    @Column(name = "name", length = 120)
+    private String name;
 }
-
- */
