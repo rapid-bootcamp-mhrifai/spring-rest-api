@@ -1,5 +1,6 @@
 package com.rapidtech.restapi.entity;
 
+import com.rapidtech.restapi.model.PurchaseOrderDetailModel;
 import com.rapidtech.restapi.model.PurchaseOrderModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.beans.BeanUtils;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.util.*;
 
 @Data
 @AllArgsConstructor
@@ -29,23 +30,11 @@ public class PurchaseOrderEntity {
     @Column(name = "customer_id", nullable = false)
     private Long customerId;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "customer_id", insertable = false, updatable = false)
-    private CustomerEntity customer;
-
     @Column(name = "employee_id", nullable = false)
     private Long employeeId;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "employee_id", insertable = false, updatable = false)
-    private EmployeeEntity employee;
-
     @Column(name = "shipper_id", nullable = false)
     private Long shipperId;
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "shipper_id", insertable = false, updatable = false)
-    private ShipperEntity shipper;
 
     @Temporal(TemporalType.DATE)
     @Column(name = "po_date", nullable = false)
@@ -53,6 +42,22 @@ public class PurchaseOrderEntity {
 
     @Column(name = "total_amount", nullable = false)
     private Double totalAmount;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "shipper_id", insertable = false, updatable = false)
+    private ShipperEntity shipper;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "customer_id", insertable = false, updatable = false)
+    private CustomerEntity customer;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "employee_id", insertable = false, updatable = false)
+    private EmployeeEntity employee;
+
+    /*@OneToMany(mappedBy = "po")
+    private List<PurchaseOrderDetailEntity> details = new ArrayList<PurchaseOrderDetailEntity>();
+     */
 
     public PurchaseOrderEntity(PurchaseOrderModel model) {
         BeanUtils.copyProperties(model, this);

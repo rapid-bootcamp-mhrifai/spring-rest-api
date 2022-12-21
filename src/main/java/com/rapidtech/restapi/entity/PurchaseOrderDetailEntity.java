@@ -28,10 +28,6 @@ public class PurchaseOrderDetailEntity {
     @Column(name = "product_id", nullable = false)
     private Long productId;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "product_id", insertable = false, updatable = false)
-    private ProductEntity product;
-
     @Column(name = "quantity", nullable = false)
     private Double quantity;
 
@@ -40,6 +36,15 @@ public class PurchaseOrderDetailEntity {
 
     @Column(name = "sub_amount", nullable = false)
     private Double subAmount;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "product_id", insertable = false, updatable = false)
+    private ProductEntity product;
+
+    /*@ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "po_detail_id", insertable = false, updatable = false)
+    private PurchaseOrderDetailEntity po;
+     */
 
     public PurchaseOrderDetailEntity(PurchaseOrderDetailModel model) {
         BeanUtils.copyProperties(model, this);

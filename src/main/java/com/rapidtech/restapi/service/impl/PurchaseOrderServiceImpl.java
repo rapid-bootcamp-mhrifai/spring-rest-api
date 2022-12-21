@@ -1,9 +1,11 @@
 package com.rapidtech.restapi.service.impl;
 
 import com.rapidtech.restapi.entity.ProductEntity;
+import com.rapidtech.restapi.entity.PurchaseOrderEntity;
 import com.rapidtech.restapi.model.ProductModel;
-import com.rapidtech.restapi.repository.ProductRepo;
-import com.rapidtech.restapi.service.ProductService;
+import com.rapidtech.restapi.model.PurchaseOrderModel;
+import com.rapidtech.restapi.repository.PurchaseOrderRepo;
+import com.rapidtech.restapi.service.PurchaseOrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,45 +15,45 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Service
-public class ProductServiceImpl implements ProductService {
-    private ProductRepo repo;
+@Slf4j
+public class PurchaseOrderServiceImpl implements PurchaseOrderService {
+    private PurchaseOrderRepo repo;
+
     @Autowired
-    public ProductServiceImpl(ProductRepo repo) {
+    public PurchaseOrderServiceImpl (PurchaseOrderRepo repo){
         this.repo = repo;
     }
-
     @Override
-    public List<ProductModel> getAll() {
-        return this.repo.findAll().stream().map(ProductModel::new)
+    public List<PurchaseOrderModel> getAll() {
+        return this.repo.findAll().stream().map(PurchaseOrderModel::new)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<ProductModel> getById(Integer id) {
+    public Optional<PurchaseOrderModel> getById(Integer id) {
         if(id == 0) {
             return Optional.empty();
         }
-        Optional<ProductEntity> result = this.repo.findById(id);
+        Optional<PurchaseOrderEntity> result = this.repo.findById(id);
         /*
         if(result.isEmpty()){
             return Optional.empty();
         }
         return Optional.of(new ProductModel(result.get()));
          */
-        return result.map(ProductModel::new);
+        return result.map(PurchaseOrderModel::new);
     }
 
     @Override
-    public Optional<ProductModel> save(ProductModel model) {
+    public Optional<PurchaseOrderModel> save(PurchaseOrderModel model) {
         if(model == null) {
             return Optional.empty();
         }
-        ProductEntity entity = new ProductEntity(model);
+        PurchaseOrderEntity entity = new PurchaseOrderEntity(model);
         try {
             this.repo.save(entity);
-            return Optional.of(new ProductModel(entity));
+            return Optional.of(new PurchaseOrderModel(entity));
         }catch (Exception e){
             log.error("Product save is failed, error: {}", e.getMessage());
             return Optional.empty();
@@ -59,12 +61,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Optional<ProductModel> update(Integer id, ProductModel model) {
+    public Optional<PurchaseOrderModel> update(Integer id, PurchaseOrderModel model) {
         if(id == 0) {
             return Optional.empty();
         }
 
-        ProductEntity result = this.repo.findById(id).orElse(null);
+        PurchaseOrderEntity result = this.repo.findById(id).orElse(null);
         if(result == null){
             return Optional.empty();
         }
@@ -73,7 +75,7 @@ public class ProductServiceImpl implements ProductService {
         BeanUtils.copyProperties(model, result);
         try {
             this.repo.save(result);
-            return Optional.of(new ProductModel(result));
+            return Optional.of(new PurchaseOrderModel(result));
         }catch (Exception e){
             log.error("Product update is failed, error: {}", e.getMessage());
             return Optional.empty();
@@ -81,23 +83,22 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Optional<ProductModel> delete(Integer id) {
+    public Optional<PurchaseOrderModel> delete(Integer id) {
         if(id == 0) {
             return Optional.empty();
         }
 
-        ProductEntity result = this.repo.findById(id).orElse(null);
+        PurchaseOrderEntity result = this.repo.findById(id).orElse(null);
         if(result == null){
             return Optional.empty();
         }
 
         try {
             this.repo.delete(result);
-            return Optional.of(new ProductModel(result));
+            return Optional.of(new PurchaseOrderModel(result));
         }catch (Exception e){
             log.error("Product delete is failed, error: {}", e.getMessage());
             return Optional.empty();
         }
     }
 }
-
