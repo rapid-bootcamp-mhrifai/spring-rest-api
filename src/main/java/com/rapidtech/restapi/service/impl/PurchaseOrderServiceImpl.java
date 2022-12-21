@@ -4,6 +4,7 @@ import com.rapidtech.restapi.entity.ProductEntity;
 import com.rapidtech.restapi.entity.PurchaseOrderEntity;
 import com.rapidtech.restapi.model.ProductModel;
 import com.rapidtech.restapi.model.PurchaseOrderModel;
+import com.rapidtech.restapi.repository.PurchaseOrderDetailRepo;
 import com.rapidtech.restapi.repository.PurchaseOrderRepo;
 import com.rapidtech.restapi.service.PurchaseOrderService;
 import lombok.extern.slf4j.Slf4j;
@@ -18,24 +19,27 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class PurchaseOrderServiceImpl implements PurchaseOrderService {
-    private PurchaseOrderRepo repo;
+    private PurchaseOrderRepo orderRepo;
+
+    private PurchaseOrderDetailRepo detailRepo;
 
     @Autowired
-    public PurchaseOrderServiceImpl (PurchaseOrderRepo repo){
-        this.repo = repo;
+    public PurchaseOrderServiceImpl (PurchaseOrderRepo orderRepo, PurchaseOrderDetailRepo detailRepo){
+        this.orderRepo = orderRepo;
+        this.detailRepo = detailRepo;
     }
     @Override
     public List<PurchaseOrderModel> getAll() {
-        return this.repo.findAll().stream().map(PurchaseOrderModel::new)
+        return this.orderRepo.findAll().stream().map(PurchaseOrderModel::new)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<PurchaseOrderModel> getById(Integer id) {
+    public Optional<PurchaseOrderModel> getById(Long id) {
         if(id == 0) {
             return Optional.empty();
         }
-        Optional<PurchaseOrderEntity> result = this.repo.findById(id);
+        Optional<PurchaseOrderEntity> result = this.orderRepo.findById(id);
         /*
         if(result.isEmpty()){
             return Optional.empty();
@@ -47,26 +51,29 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
     @Override
     public Optional<PurchaseOrderModel> save(PurchaseOrderModel model) {
-        if(model == null) {
+        if (model == null || model.getDetails().isEmpty()) {
             return Optional.empty();
         }
+
         PurchaseOrderEntity entity = new PurchaseOrderEntity(model);
+        entity.addDetailList(model.getDetails());
+
         try {
-            this.repo.save(entity);
-            return Optional.of(new PurchaseOrderModel(entity));
-        }catch (Exception e){
-            log.error("Product save is failed, error: {}", e.getMessage());
+            this.orderRepo.save(entity);
+            return Optional.of(model);
+        } catch (Exception e) {
+            log.error("Purchase Order save is failed, error: {}", e.getMessage());
             return Optional.empty();
         }
     }
 
     @Override
-    public Optional<PurchaseOrderModel> update(Integer id, PurchaseOrderModel model) {
+    public Optional<PurchaseOrderModel> update(Long id, PurchaseOrderModel model) {
         if(id == 0) {
             return Optional.empty();
         }
 
-        PurchaseOrderEntity result = this.repo.findById(id).orElse(null);
+        PurchaseOrderEntity result = this.orderRepo.findById(id).orElse(null);
         if(result == null){
             return Optional.empty();
         }
@@ -74,7 +81,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         // copy property
         BeanUtils.copyProperties(model, result);
         try {
-            this.repo.save(result);
+            this.orderRepo.save(result);
             return Optional.of(new PurchaseOrderModel(result));
         }catch (Exception e){
             log.error("Product update is failed, error: {}", e.getMessage());
@@ -83,18 +90,18 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     }
 
     @Override
-    public Optional<PurchaseOrderModel> delete(Integer id) {
+    public Optional<PurchaseOrderModel> delete(Long id) {
         if(id == 0) {
             return Optional.empty();
         }
 
-        PurchaseOrderEntity result = this.repo.findById(id).orElse(null);
+        PurchaseOrderEntity result = this.orderRepo.findById(id).orElse(null);
         if(result == null){
             return Optional.empty();
         }
 
         try {
-            this.repo.delete(result);
+            this.orderRepo.delete(result);
             return Optional.of(new PurchaseOrderModel(result));
         }catch (Exception e){
             log.error("Product delete is failed, error: {}", e.getMessage());

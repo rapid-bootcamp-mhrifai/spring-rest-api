@@ -22,7 +22,7 @@ public class PurchaseOrderEntity {
             pkColumnValue="po_id", initialValue=0, allocationSize=0)
 
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "po_id_generator")
-    private Integer id;
+    private Long id;
 
     @Column(name = "po_code", length = 20, nullable = false)
     private String poCode;
@@ -55,11 +55,27 @@ public class PurchaseOrderEntity {
     @JoinColumn(name = "employee_id", insertable = false, updatable = false)
     private EmployeeEntity employee;
 
-    /*@OneToMany(mappedBy = "po")
-    private List<PurchaseOrderDetailEntity> details = new ArrayList<PurchaseOrderDetailEntity>();
-     */
+    @OneToMany(mappedBy = "purchaseOrder", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<PurchaseOrderDetailEntity> purchaseOrderDetails = new HashSet<>();
 
     public PurchaseOrderEntity(PurchaseOrderModel model) {
-        BeanUtils.copyProperties(model, this);
+        this.poCode = model.getPoCode();
+        this.customerId = model.getCustomerId();
+        this.employeeId = model.getEmployeeId();
+        this.shipperId = model.getShipperId();
+        this.poDate = model.getPoDate();
     }
+
+    public void addDetail(PurchaseOrderDetailEntity detailEntity){
+        this.purchaseOrderDetails.add(detailEntity);
+        detailEntity.setPurchaseOrder(this);
+    }
+
+    public void addDetailList(List<PurchaseOrderDetailModel> details){
+        for(PurchaseOrderDetailModel item: details){
+            PurchaseOrderDetailEntity detailEntity = new PurchaseOrderDetailEntity(item);
+            addDetail(detailEntity);
+        }
+    }
+
 }

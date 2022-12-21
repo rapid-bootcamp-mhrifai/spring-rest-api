@@ -20,10 +20,10 @@ public class PurchaseOrderDetailEntity {
             pkColumnName = "gen_name", valueColumnName = "gen_value",
             pkColumnValue="po_detail_id", initialValue=0, allocationSize=0)
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "po_detail_id_generator")
-    private Integer id;
+    private Long id;
 
     @Column(name = "po_id")
-    private Integer poId;
+    private Long poId;
 
     @Column(name = "product_id", nullable = false)
     private Long productId;
@@ -41,12 +41,14 @@ public class PurchaseOrderDetailEntity {
     @JoinColumn(name = "product_id", insertable = false, updatable = false)
     private ProductEntity product;
 
-    /*@ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "po_detail_id", insertable = false, updatable = false)
-    private PurchaseOrderDetailEntity po;
-     */
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "purchaseOrder", insertable = false, updatable = false)
+    private PurchaseOrderDetailEntity purchaseOrder;
 
     public PurchaseOrderDetailEntity(PurchaseOrderDetailModel model) {
-        BeanUtils.copyProperties(model, this);
+        this.productId = model.getProductId();
+        this.quantity = model.getQuantity();
+        this.price = model.getPrice();
+        this.subAmount = model.getPrice() * model.getQuantity();
     }
 }

@@ -6,13 +6,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.BeanUtils;
 
+import java.io.Serializable;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PurchaseOrderDetailModel {
-    private Integer id;
-    private Integer poId;
-    private Integer productId;
+public class PurchaseOrderDetailModel implements Serializable {
+    private Long id;
+    private Long poId;
+    private Long productId;
     private Double quantity;
     private Double price;
     private Double subAmount;
