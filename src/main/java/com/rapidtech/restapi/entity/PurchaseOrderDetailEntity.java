@@ -4,7 +4,6 @@ import com.rapidtech.restapi.model.PurchaseOrderDetailModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.BeanUtils;
 
 import javax.persistence.*;
 
@@ -43,7 +42,7 @@ public class PurchaseOrderDetailEntity {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "purchaseOrder", insertable = false, updatable = false)
-    private PurchaseOrderDetailEntity purchaseOrder;
+    private PurchaseOrderEntity purchase;
 
     public PurchaseOrderDetailEntity(PurchaseOrderDetailModel model) {
         this.productId = model.getProductId();

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.beans.BeanUtils;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.*;
 
 @Data
@@ -55,20 +56,16 @@ public class PurchaseOrderEntity {
     @JoinColumn(name = "employee_id", insertable = false, updatable = false)
     private EmployeeEntity employee;
 
-    @OneToMany(mappedBy = "purchaseOrder", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<PurchaseOrderDetailEntity> purchaseOrderDetails = new HashSet<>();
 
     public PurchaseOrderEntity(PurchaseOrderModel model) {
-        this.poCode = model.getPoCode();
-        this.customerId = model.getCustomerId();
-        this.employeeId = model.getEmployeeId();
-        this.shipperId = model.getShipperId();
-        this.poDate = model.getPoDate();
+        BeanUtils.copyProperties(model, this);
     }
 
     public void addDetail(PurchaseOrderDetailEntity detailEntity){
         this.purchaseOrderDetails.add(detailEntity);
-        detailEntity.setPurchaseOrder(this);
+        detailEntity.setPurchase(this);
     }
 
     public void addDetailList(List<PurchaseOrderDetailModel> details){
